@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: python-app
+#  namespace: my-app
+spec:
+  containers:
+    - name: python-app
+      image: gcr.io/utopian-goods-272809/python-app:0.1
+      ports:
+        - containerPort: 80
+      readinessProbe:
+        tcpSocket:
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 10
+      livenessProbe:
+        tcpSocket:
+          port: 8080
+        initialDelaySeconds: 15
+        periodSeconds: 20

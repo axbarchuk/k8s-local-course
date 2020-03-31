@@ -1,0 +1,17 @@
+{% macro check_if_ready(name, status) -%}
+{% if status -%}
+    <p> {{name}} status: <span style="color: green;">PASS</span> </p>
+{% else %}
+    <p> {{name}} status: <span style="color: red;">FAIL</span> </p>
+{%- endif %}
+{%- endmacro %}
+<body>
+  <h2>Hello!</h2>
+  <p>Hostname: {{hostname}}</p>
+  {{check_if_ready('Redis', redis_result)}}
+  {{check_if_ready('MySQL', mysql_result)}}
+  <p> Visits: {{visits}} </p>
+  <p> Previous visits: {{m_visits}} </p>
+</body>
+
+
