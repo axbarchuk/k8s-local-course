@@ -16,6 +16,9 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          env:
+            - name: REDIS_NAME
+              value: redis
           readinessProbe:
             tcpSocket:
               port: 80
@@ -26,6 +29,12 @@ spec:
               port: 80
             initialDelaySeconds: 15
             periodSeconds: 20
+      initContainers:
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379
+          command: ['sh', '-c', 'until redis-cli -p 6379 ping; do echo waiting for redis; sleep 2; done;']
   selector:
     matchLabels:
       app: python-app
