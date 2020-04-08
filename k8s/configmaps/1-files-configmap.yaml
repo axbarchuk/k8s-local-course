@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: file-config
+data:
+  application.properties: |
+    server.port=8080
+    spring.profiles.active=prod
+  application-local.properties: |
+    server.port=8090
+    spring.profiles.active=local

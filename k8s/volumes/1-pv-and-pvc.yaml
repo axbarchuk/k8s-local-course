@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-app-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: k8s-course-data-disk
+  volumeMode: Filesystem
+  storageClassName: standard
+  persistentVolumeReclaimPolicy: Retain
+  #  persistentVolumeReclaimPolicy: Delete
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-app-pvc
+spec:
+  volumeName: example-app-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+#  storageClassName: standard
+#  volumeMode: Filesystem
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: example-app
+spec:
+  volumes:
+    - name: example-app-storage
+      persistentVolumeClaim:
+        claimName: example-app-pvc
+  containers:
+    - name: nginx
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: example-app-storage
