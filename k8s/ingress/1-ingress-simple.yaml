@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: python-app
+    spec:
+      containers:
+        - name: python-app
+          image: gcr.io/k8s-course-274908/python-app:0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+  selector:
+    matchLabels:
+      run: python-app
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: python-app
+  type: NodePort
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: python-app
+spec:
+  backend:
+    serviceName: python-app
+    servicePort: 80
